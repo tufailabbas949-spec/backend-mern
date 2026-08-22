@@ -1,0 +1,16 @@
+{
+  "name": "thried_p_api",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "tufail abbas",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}
