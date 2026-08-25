@@ -1,52 +1,57 @@
 import express from "express";
 import "dotenv/config"
+import connectDB from "./ser/db/db.js";
+import { userModel } from "./models/user.model.js";
 
 const port = process.env.PORT
 const app = express()
 app.use(express.json())
 
+connectDB()
 const users_list = []
 
 app.get("/", (req,res)=>{
     res.send("<h1>tufail abbas</h1>")
 })
-
-app.get("/users",(req,res)=>{
-     
-     console.log(req.body)
+app.post("/user", async (req,res)=>{
+    const data = req.body 
     
-    res.status(200).json({
-        "message":'data fetching done',
+   await userModel.create({
+        name:data.name,
+        age:data.age
+    })
+    res.status(201).json({
+        "message":"user created"
+    })
+})
+
+app.get("/user", async(req,res)=>{
+    const users_list =  await userModel.find()  // always send array []
+    res.status(201).json({
+        "message":"data fetching successfuly",
         "users": users_list
     })
 })
-app.post("/users",(req,res)=>{
-         console.log(req.body)
-    users_list.push(req.body)
 
-    res.status(200).json({
-        "message":"data create users create done",
+app.delete("/user/:name", async (req,res)=>{
+    const id = req.params.name
+
+    await userModel.findOneAndDelete({
+          name: id
     })
-
-})
-app.delete("/users/:index",(req,res)=>{
-    const index = req.params.index
-
-   delete users_list[index]
-   res.status(200).json({
-    "message":'delete done',
-   })
-
-})
-app.patch("/users/:index",(req,res)=>{
-    const index = req.params.index;
-    const password = req.body
-    users_list[index].password = password
-    res.status(200).json({
-        "message":"data update",
+    res.status(201).json({
+        "message":"user delete done"
     })
 })
-
+app.patch("/user/:name",async (req,res)=>{
+    const name = req.params.name
+    const age = req.body.age
+    await userModel.findOneAndUpdate({
+        _id:name
+    },{
+        age:age
+    })
+})
 app.listen(port,()=>{
     console.log(`run server ${port}`);
 })
